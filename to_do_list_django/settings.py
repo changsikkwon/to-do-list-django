@@ -1,6 +1,6 @@
 import os
 
-from config import DATABASES
+from config import DATABASES, SECRET_KEY
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'to_do_list',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'to_do_list_django.wsgi.application'
 
+SECRET_KEY = SECRET_KEY
 
 # Database
 DATABASES = DATABASES
