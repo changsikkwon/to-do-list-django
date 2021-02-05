@@ -54,7 +54,7 @@ class CreateUser(graphene.Mutation):
     user.save()
     
     return CreateUser(user=user)
-  
+
   
 class AuthUser(graphene.Mutation):
   class Arguments:
@@ -77,3 +77,7 @@ class AuthUser(graphene.Mutation):
 class Mutation(graphene.ObjectType):
   create_user = CreateUser.Field()
   auth_user = AuthUser.Field()
+    
+        
+class Mutation(graphene.ObjectType):
+  create_user = CreateUser.Field()
