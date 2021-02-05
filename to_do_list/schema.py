@@ -77,7 +77,3 @@ class AuthUser(graphene.Mutation):
 class Mutation(graphene.ObjectType):
   create_user = CreateUser.Field()
   auth_user = AuthUser.Field()
-    
-        
-class Mutation(graphene.ObjectType):
-  create_user = CreateUser.Field()
