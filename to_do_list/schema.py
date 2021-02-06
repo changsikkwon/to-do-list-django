@@ -55,7 +55,7 @@ class CreateUser(graphene.Mutation):
     user.save()
     
     return CreateUser(user=user)
-  
+
   
 class AuthUser(graphene.Mutation):
   class Arguments:
