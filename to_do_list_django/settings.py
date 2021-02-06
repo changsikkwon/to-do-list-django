@@ -28,6 +28,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django_globals.middleware.Global',
 ]
 
 ROOT_URLCONF = 'to_do_list_django.urls'
