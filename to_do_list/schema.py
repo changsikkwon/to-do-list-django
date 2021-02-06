@@ -1,7 +1,8 @@
 from graphene_django.types import DjangoObjectType, ObjectType
-import graphql
 from .models import User, Status, ToDo
 from graphql import GraphQLError
+from .utils import login_required
+from django_globals import globals
 
 import graphene
 import bcrypt
@@ -72,8 +73,30 @@ class AuthUser(graphene.Mutation):
         return AuthUser(access_token=access_token)
         
       raise GraphQLError('Invalid_Password')
+    
   
-        
+class CreateStatus(graphene.Mutation):
+  class Arguments:
+    status_name = graphene.String(required=True)
+    
+  status = graphene.Field(lambda: StatusType)
+  
+  @login_required    
+  def mutate(self, info, status_name):
+    if len(Status.objects.filter(user_id=globals.user))>3:
+      raise GraphQLError('Full_Status')
+    
+    status = Status(
+      user_id = globals.user,
+      status_name = status_name,
+    )
+    
+    status.save()
+    
+    return CreateStatus(status=status)
+    
+      
 class Mutation(graphene.ObjectType):
   create_user = CreateUser.Field()
   auth_user = AuthUser.Field()
+  create_status = CreateStatus.Field()
