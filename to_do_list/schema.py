@@ -1,3 +1,4 @@
+from graphene.types.scalars import String
 from graphene_django.types import DjangoObjectType, ObjectType
 from .models import User, Status, ToDo
 from graphql import GraphQLError
@@ -117,6 +118,24 @@ class UpdateStatus(graphene.Mutation):
     status.save()
     
     return UpdateStatus(status=status)
+  
+
+class DeleteStatus(graphene.Mutation):
+  class Arguments:
+    id = graphene.ID(required=True)
+    
+  status = graphene.Field(graphene.String)
+  
+  @login_required
+  def mutate(self, info ,id):
+    if not Status.objects.filter(user_id=globals.user, id=id):
+      raise GraphQLError('Invalid_Status_ID')
+    
+    status = Status.objects.get(user_id=globals.user, id=id)
+    
+    status.delete()
+    
+    return DeleteStatus()
     
       
 class Mutation(graphene.ObjectType):
@@ -124,3 +143,4 @@ class Mutation(graphene.ObjectType):
   auth_user = AuthUser.Field()
   create_status = CreateStatus.Field()
   update_status = UpdateStatus.Field()
+  delete_status = DeleteStatus.Field()
