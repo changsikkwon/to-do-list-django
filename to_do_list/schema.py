@@ -94,9 +94,33 @@ class CreateStatus(graphene.Mutation):
     status.save()
     
     return CreateStatus(status=status)
+  
+
+class UpdateStatus(graphene.Mutation):
+  class Arguments:
+    id = graphene.ID(required=True)
+    status_name = graphene.String(required=True)
+    
+  status = graphene.Field(lambda: StatusType)
+  
+  @login_required
+  def mutate(self, info, id, status_name):
+    if not Status.objects.filter(user_id=globals.user, id=id):
+      raise GraphQLError('Invalid_Status_ID')
+    
+    status = Status(
+      id = id,
+      user_id = globals.user,
+      status_name = status_name,
+    )
+    
+    status.save()
+    
+    return UpdateStatus(status=status)
     
       
 class Mutation(graphene.ObjectType):
   create_user = CreateUser.Field()
   auth_user = AuthUser.Field()
   create_status = CreateStatus.Field()
+  update_status = UpdateStatus.Field()
