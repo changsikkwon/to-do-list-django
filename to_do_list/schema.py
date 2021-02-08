@@ -1,3 +1,4 @@
+from graphene.types.scalars import String
 from graphene_django.types import DjangoObjectType, ObjectType
 from .models import User, Status, ToDo
 from graphql import GraphQLError
@@ -105,7 +106,7 @@ class UpdateStatus(graphene.Mutation):
   
   @login_required
   def mutate(self, info, id, status_name):
-    if not Status.objects.filter(user_id=globals.user, id=id):
+    if not Status.objects.filter(id=id, user_id=globals.user):
       raise GraphQLError('Invalid_Status_ID')
     
     status = Status(
@@ -117,6 +118,50 @@ class UpdateStatus(graphene.Mutation):
     status.save()
     
     return UpdateStatus(status=status)
+  
+
+class DeleteStatus(graphene.Mutation):
+  class Arguments:
+    id = graphene.ID(required=True)
+    
+  status = graphene.Field(graphene.String)
+  
+  @login_required
+  def mutate(self, info ,id):
+    if Status.objects.filter(user_id=globals.user, id=id):
+      raise GraphQLError('Invalid_Status_ID')
+    
+    status = Status.objects.get(user_id=globals.user, id=id)
+    
+    status.delete()
+    
+    return DeleteStatus()
+  
+
+class CreateToDo(graphene.Mutation):
+  class Arguments:
+    status_id = graphene.ID(required=True)
+    title = graphene.String(required=True)
+    content = graphene.String(required=True)
+    
+  todo = graphene.Field(lambda: TodoType)
+    
+  @login_required
+  def mutate(self, info, status_id, title, content):
+    if Status.objects.filter(id=status_id, user_id=globals.user):
+      
+      todo = ToDo(
+        status_id = status_id,
+        title = title,
+        content = content,
+      )
+      
+      todo.save()
+      
+      return CreateToDo(todo=todo)
+    
+    else:
+      raise GraphQLError('Invalid_Status')
     
       
 class Mutation(graphene.ObjectType):
@@ -124,3 +169,5 @@ class Mutation(graphene.ObjectType):
   auth_user = AuthUser.Field()
   create_status = CreateStatus.Field()
   update_status = UpdateStatus.Field()
+  delete_status = DeleteStatus.Field()
+  create_todo = CreateToDo.Field()
