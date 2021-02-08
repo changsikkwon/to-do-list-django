@@ -106,7 +106,7 @@ class UpdateStatus(graphene.Mutation):
   
   @login_required
   def mutate(self, info, id, status_name):
-    if not Status.objects.filter(user_id=globals.user, id=id):
+    if not Status.objects.filter(id=id, user_id=globals.user):
       raise GraphQLError('Invalid_Status_ID')
     
     status = Status(
@@ -128,7 +128,7 @@ class DeleteStatus(graphene.Mutation):
   
   @login_required
   def mutate(self, info ,id):
-    if not Status.objects.filter(user_id=globals.user, id=id):
+    if Status.objects.filter(user_id=globals.user, id=id):
       raise GraphQLError('Invalid_Status_ID')
     
     status = Status.objects.get(user_id=globals.user, id=id)
@@ -148,7 +148,8 @@ class CreateToDo(graphene.Mutation):
     
   @login_required
   def mutate(self, info, status_id, title, content):
-    if Status.objects.filter(id=status_id, user_id=globals.user).exists():
+    if Status.objects.filter(id=status_id, user_id=globals.user):
+      
       todo = ToDo(
         status_id = status_id,
         title = title,
