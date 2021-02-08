@@ -136,6 +136,31 @@ class DeleteStatus(graphene.Mutation):
     status.delete()
     
     return DeleteStatus()
+  
+
+class CreateToDo(graphene.Mutation):
+  class Arguments:
+    status_id = graphene.ID(required=True)
+    title = graphene.String(required=True)
+    content = graphene.String(required=True)
+    
+  todo = graphene.Field(lambda: TodoType)
+    
+  @login_required
+  def mutate(self, info, status_id, title, content):
+    if Status.objects.filter(id=status_id, user_id=globals.user).exists():
+      todo = ToDo(
+        status_id = status_id,
+        title = title,
+        content = content,
+      )
+      
+      todo.save()
+      
+      return CreateToDo(todo=todo)
+    
+    else:
+      raise GraphQLError('Invalid_Status')
     
       
 class Mutation(graphene.ObjectType):
@@ -144,3 +169,4 @@ class Mutation(graphene.ObjectType):
   create_status = CreateStatus.Field()
   update_status = UpdateStatus.Field()
   delete_status = DeleteStatus.Field()
+  create_todo = CreateToDo.Field()
