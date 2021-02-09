@@ -1,9 +1,8 @@
-from graphene.types.scalars import String
 from graphene_django.types import DjangoObjectType, ObjectType
-from .models import User, Status, ToDo
 from graphql import GraphQLError
-from .utils import login_required
 from django_globals import globals
+from .models import User, Status, ToDo
+from .utils import login_required
 
 import graphene
 import bcrypt
@@ -163,6 +162,32 @@ class CreateToDo(graphene.Mutation):
     else:
       raise GraphQLError('Invalid_Status')
     
+    
+class UpdateToDo(graphene.Mutation):
+  class Arguments:
+    id = graphene.ID(required=True)
+    status_id = graphene.ID(required=True)
+    title = graphene.String()
+    content = graphene.String()
+    
+  todo = graphene.Field(lambda: TodoType)
+  
+  @login_required
+  def mutate(self, info, **kwargs):
+    if Status.objects.filter(id=kwargs['status_id'], user_id=globals.user):
+      
+      todo = ToDo.objects.get(id=kwargs['id'], status_id=kwargs['status_id'])
+      
+      for key, value in kwargs.items():
+        setattr(todo, key, value)
+        
+      todo.save()
+      
+      return CreateToDo(todo=todo)
+    
+    else:
+      raise GraphQLError('Invalid_Status')
+    
       
 class Mutation(graphene.ObjectType):
   create_user = CreateUser.Field()
@@ -171,3 +196,4 @@ class Mutation(graphene.ObjectType):
   update_status = UpdateStatus.Field()
   delete_status = DeleteStatus.Field()
   create_todo = CreateToDo.Field()
+  update_todo = UpdateToDo.Field()
