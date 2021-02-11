@@ -30,6 +30,7 @@ class Query(ObjectType):
   todo = graphene.Field(TodoType, id=graphene.ID())
   all_status = graphene.List(StatusType)
   
+  @login_required
   def resolve_all_status(self, info):
     return Status.objects.filter(user_id=globals.user)
   
