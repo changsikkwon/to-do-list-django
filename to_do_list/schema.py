@@ -28,10 +28,10 @@ class Query(ObjectType):
   user = graphene.Field(UserType, id=graphene.ID())
   status = graphene.Field(StatusType, id=graphene.ID())
   todo = graphene.Field(TodoType, id=graphene.ID())
-  users = graphene.List(UserType)
+  all_status = graphene.List(StatusType)
   
-  def resolve_users(self, info, **kwargs):
-    return User.objects.all()
+  def resolve_all_status(self, info):
+    return Status.objects.filter(user_id=globals.user)
   
   
 class CreateUser(graphene.Mutation):
