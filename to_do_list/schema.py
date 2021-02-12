@@ -25,9 +25,6 @@ class TodoType(DjangoObjectType):
     
 
 class Query(ObjectType):
-  user = graphene.Field(UserType, id=graphene.ID())
-  status = graphene.Field(StatusType, id=graphene.ID())
-  todo = graphene.Field(TodoType, id=graphene.ID())
   all_status = graphene.List(StatusType)
   all_todo = graphene.List(TodoType)
   
