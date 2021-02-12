@@ -25,15 +25,17 @@ class TodoType(DjangoObjectType):
     
 
 class Query(ObjectType):
-  user = graphene.Field(UserType, id=graphene.ID())
-  status = graphene.Field(StatusType, id=graphene.ID())
-  todo = graphene.Field(TodoType, id=graphene.ID())
   all_status = graphene.List(StatusType)
+  all_todo = graphene.List(TodoType)
   
   @login_required
   def resolve_all_status(self, info):
     return Status.objects.filter(user_id=globals.user)
   
+  @login_required
+  def resolve_all_todo(self, info):
+    return ToDo.objects.select_related('status__user').filter(status__user_id=globals.user)
+    
   
 class CreateUser(graphene.Mutation):
   class Arguments:
