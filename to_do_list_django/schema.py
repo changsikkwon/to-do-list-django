@@ -1,11 +1,12 @@
 import graphene
-from to_do_list.schema import Query as to_do_list_query, Mutation as to_do_list_mutation
+from user.schema import Query as user_query, Mutation as user_mutation
+from todo.schema import Query as todo_query, Mutation as todo_mutation
 
-class Query(to_do_list_query):
+class Query(user_query, todo_query):
   pass
 
 
-class Mutation(to_do_list_mutation):
+class Mutation(user_mutation, todo_mutation):
   pass
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
