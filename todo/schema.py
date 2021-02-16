@@ -1,11 +1,10 @@
+import graphene
+
 from graphene_django.types import DjangoObjectType, ObjectType
 from graphql import GraphQLError
 from django_globals import globals
 from .models import Status, ToDo
 from user.utils import login_required
-
-import graphene
-
 
 class StatusType(DjangoObjectType):
   class Meta:
