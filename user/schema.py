@@ -1,12 +1,11 @@
-from graphene_django.types import DjangoObjectType, ObjectType
-from graphql import GraphQLError
-from .models import User
-
 import graphene
 import bcrypt
 import jwt
 import config
 
+from graphene_django.types import DjangoObjectType, ObjectType
+from graphql import GraphQLError
+from .models import User
 
 class UserType(DjangoObjectType):
   class Meta:
