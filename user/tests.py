@@ -1,10 +1,9 @@
 import bcrypt
 
 from graphene_django.utils.testing import GraphQLTestCase
-from graphql import GraphQLError
 from .models import User
 
-class ToDoTestCase(GraphQLTestCase):
+class ToDoTestCase(GraphQLTestCase):  
   def setUp(self):
     User(
       account = "1234",
@@ -16,16 +15,29 @@ class ToDoTestCase(GraphQLTestCase):
   
   def test_create_user(self):
     response = self.query(
-        '''
-        mutation{
-          createUser(account:"1234", password:"1234"){
-            user{
-              account
-              password
-            }
+      '''
+      mutation{
+        createUser(account:"123", password:"1234"){
+          user{
+            account
+            password
           }
         }
-        '''
+      }
+      '''
     )
+      
+    self.assertResponseNoErrors(response)
 
+  def test_auth_user(self):
+    response = self.query(
+      '''
+      mutation{
+        authUser(account:"1234", password:"1234"){
+          accessToken
+        }
+      }
+      '''
+    )
+    
     self.assertResponseNoErrors(response)
