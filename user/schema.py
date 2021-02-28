@@ -26,7 +26,7 @@ class CreateUser(graphene.Mutation):
   def mutate(self, info, account, password):
     if User.objects.filter(account=account).exists():
       raise GraphQLError('Already_Exist_Account')
-    if len(account) < 5:
+    if len(account) < 4:
       raise GraphQLError('Short_Account')
     if len(password) < 8:
       raise GraphQLError('Short_Password')
@@ -59,6 +59,7 @@ class AuthUser(graphene.Mutation):
         return AuthUser(access_token=access_token)
         
       raise GraphQLError('Invalid_Password')
+
     
     
 class Mutation(graphene.ObjectType):
