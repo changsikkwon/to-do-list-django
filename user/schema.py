@@ -26,6 +26,10 @@ class CreateUser(graphene.Mutation):
   def mutate(self, info, account, password):
     if User.objects.filter(account=account).exists():
       raise GraphQLError('Already_Exist_Account')
+    if len(account) < 5:
+      raise GraphQLError('Short_Account')
+    if len(password) < 8:
+      raise GraphQLError('Short_Password')
     
     password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     
